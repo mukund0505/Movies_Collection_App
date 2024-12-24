@@ -314,7 +314,7 @@ const CreateMovie = () => {
         ...prevData,
         genre: genres[0]?._id || "",
       }));
-      console.log(genres[0]?._id);
+      // console.log(genres[0]?._id);
     }
   }, [genres]);
 

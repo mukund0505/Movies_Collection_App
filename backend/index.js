@@ -35,6 +35,8 @@ dotenv.config({ path: path.resolve(__dirname, "../.env") });
 
 connectToDB();
 
+const PORT = process.env.PORT || 3000;
+
 // Cloudinary Configuration
 cloudinary.v2.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -44,7 +46,9 @@ cloudinary.v2.config({
 
 const app = express();
 
-app.use(cors()); // Allow all domains for now (you can specify particular domains in production)
+const _dirname = path.resolve();
+
+// app.use(cors()); // Allow all domains for now (you can specify particular domains in production)
 
 // middlewares
 
@@ -54,7 +58,12 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use(cookieParser());
 
-const PORT = process.env.PORT || 3000;
+const corsOptions = {
+  origin: "http://localhost:5173",
+  credentials: true,
+};
+
+app.use(cors(corsOptions));
 
 // routes
 
@@ -65,6 +74,11 @@ app.use("/api/v1/genre", genreRoutes);
 app.use("/api/v1/movies", moviesRoutes);
 
 app.use("/api/v1/upload", uploadRoutes);
+
+app.use(express.static(path.join(_dirname, "/frontend/dist"))); // serving frontend file
+app.get("*", (_, res) => {
+  res.sendFile(path.resolve(_dirname, "frontend", "dist", "index.html"));
+});
 
 // const __dirname = path.resolve();
 // app.use("/uploads", express.static(path.join(__dirname, "../uploads")));   // main IMP
